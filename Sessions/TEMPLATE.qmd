@@ -1,0 +1,21 @@
+---
+title: Posit Conference Notes 
+date: today 
+format:
+  gfm:
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    df-print: kable
+    
+self-contained: true
+fig-width:  7
+fig-height: 5
+---
+
+# Session: 
+
+
+
+
+

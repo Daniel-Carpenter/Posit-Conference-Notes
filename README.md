@@ -1,2 +1,3 @@
-# Posit-Conference-Notes
-Notes taken at the 2024 Posit Conference
+# Posit Conference Notes
+
+2024-08-07

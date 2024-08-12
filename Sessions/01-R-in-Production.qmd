@@ -15,6 +15,14 @@ fig-height: 5
 
 # Session: R in Production
 
+## Key Takeaways
+
+- GitHub Actions to automate batch jobs (only for )
+
+- [`pointblank`](https://rstudio.github.io/pointblank/) package for data validation
+
+  - (validation report, column types, missingess, values in range)
+
 ## Misc. Facts
 
 -   bacth: anything that is going to run at an interval, such as a database update.
@@ -83,3 +91,58 @@ fig-height: 5
 ## Authentication
 
 * Federated authetication trumps enctryted authentication. However, your IT team sets up federated. Posit Connect allows for this.
+
+### Secrets
+
+* GitHub, can add secrets per repo
+* Can add secrets on Posit Connect
+* Note, do not commit .Rhistory files because that is a log of the console, which could send secret info.
+
+## Running Code Repeatedly
+
+- Eliminate all warnings and messages
+  
+  - Warnings remove. could use `options(warn = 2)` to change all warnings for errors.
+  
+  - Deprication could change this to an error with `options(lifecycle_verbosity = "error")`
+  
+  - Messages help clean up the logs for error isolation
+
+- Check and reduce the number of dependencies, causing potential for errors in the future
+  
+  -   `pak` packages has a packages needed that we can evakuate
+
+
+### Dealing with Package Conflicts:
+
+Use the `library(conflicts)` function, and it will throw and error and force you to deal with the conflicts
+
+
+### `renv`: Install a package per project
+
+> Only use this unless you have to, keeps the code in the original state. 
+
+> Problem: This could cause stale packages
+
+### Data Changes
+
+Social: make friends and contracts with your data.
+
+Technical: make error checks
+
+#### `pointblank`:
+
+check's column types, missingness, matching variables, values are in range
+
+RMD data validation report
+-  Data quality reporting  
+-  Pipeline data validation  
+-  Expectations in unit tests  
+-  Custom control flow  
+-  Rmd integration  
+
+Can send emails on fail using connect
+
+<https://github.com/posit-conf-2023/ds-workflows-r/blob/main/materials/project/01_data_clean_validate/01_data_clean_validate.rmd#L192C3-L192C21>
+
+

@@ -146,3 +146,48 @@ Can send emails on fail using connect
 <https://github.com/posit-conf-2023/ds-workflows-r/blob/main/materials/project/01_data_clean_validate/01_data_clean_validate.rmd#L192C3-L192C21>
 
 
+## Sharing Code
+
+### Tips
+
+- Use parquet instead of CSVs
+
+- duckplyr has dplyr syntax but only pulls data when you need it. Good for large data sets.
+
+"Worst possible case: code only available on one person's computer, being emailed back and forth with others"
+
+- Github tags can be useful
+
+
+### Coding Style
+
+Examples: 
+
+- <https://github.com/jtleek/rpackages>  
+- <https://github.com/jtleek/datasharing>  
+- <https://style.tidyverse.org/> 
+- <https://design.tidyverse.org/>  
+
+
+Create a quarto book for your style. If we do not want to use it, and style.tidyverse's
+
+
+### Self Critique
+
+<https://code-review.tidyverse.org/>
+
+- GOal is not perfection, but better over time
+
+- Give yourself a couple of days
+
+- Pull request on your own repo
+
+- Use the DEAR (man) framework to ask for feedback. It helps with helping others focus on it.
+
+- Use the GIVE method for feedback (Gentle, Interested, Validate, Easy Manner)
+  - Be sure to mention what they did really well. (I never thought of doing it that way.)
+  
+### Shared Ownership
+  
+> Strive for the culture of the ability to merge and ask  
+

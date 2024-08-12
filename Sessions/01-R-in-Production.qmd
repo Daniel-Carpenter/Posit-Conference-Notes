@@ -1,0 +1,46 @@
+---
+title: Posit Conference Notes 
+date: today 
+format:
+  gfm:
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    df-print: kable
+    
+self-contained: true
+fig-width:  7
+fig-height: 5
+---
+
+# Session: R in Production
+
+## Misc. Facts
+
+-   bacth: anything that is going to run at an interval, such as a database update.
+
+-   Deploy code, vs. render
+
+    -   `pak::pak`: faster than `install.packages()` since runs in parallel, does dependancies, generally easy and fast.
+
+        -   Use `rig` to install R
+
+        -   Use `PPPM` for sourcing public binaries.
+
+# The Whole Game
+
+-   "You cannot do data science if you do not understand Git"
+
+## GitHub Actions
+
+-   Description: Able to run jobs, like R, python scripts, shiny apps, integrates well with cron (cron generated with LLM, verified with cron guru, add comment)
+
+-   Tips:
+
+    -   Find a template or create one on ChatGPT, no one really writes these by hand.
+
+    -   Use the same naming before the file extension
+
+    -   Pick a random minute in the hour to schedule the job because most do 0 or 5's
+
+    -   You will need to install every package that the code will run, within the GitHub action

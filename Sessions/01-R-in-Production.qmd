@@ -26,6 +26,12 @@ fig-height: 5
         -   Use `rig` to install R
 
         -   Use `PPPM` for sourcing public binaries.
+        
+- In a project, use the `R/` folder for the reused code
+
+- Remember that the server runs on UTC
+
+- Use the `ragg` package on linux to produce the same level of graphics.
 
 # The Whole Game
 
@@ -35,12 +41,45 @@ fig-height: 5
 
 -   Description: Able to run jobs, like R, python scripts, shiny apps, integrates well with cron (cron generated with LLM, verified with cron guru, add comment)
 
--   Tips:
+### Benefits
 
-    -   Find a template or create one on ChatGPT, no one really writes these by hand.
+- Auto-Commits back to GitHub after running the code
 
-    -   Use the same naming before the file extension
+- Great for batch jobs
 
-    -   Pick a random minute in the hour to schedule the job because most do 0 or 5's
 
-    -   You will need to install every package that the code will run, within the GitHub action
+
+### Cons
+
+- Must be run every 60 days or else it will stop running.
+
+
+### Tips:
+
+-   Find a template or create one on ChatGPT, no one really writes these by hand.
+
+-   Use the same naming before the file extension
+
+-   Pick a random minute in the hour to schedule the job because most do 0 or 5's
+
+-   You will need to install every package that the code will run, within the GitHub action
+
+-   Waiting a bit can help
+
+
+## Posit Connect
+
+- Key use case: shiny apps
+
+- better dependancy installation system
+
+## Logging
+
+* In production code, a good idea would be to add log messages throughout the code, such as using `cat('Message', file = sterr())`. Also, could do informative chunk naming.
+
+* The `logger` package enhaces this by adding warnings, errors, etc, while integrating variables through `glue`
+
+
+## Authentication
+
+* Federated authetication trumps enctryted authentication. However, your IT team sets up federated. Posit Connect allows for this.

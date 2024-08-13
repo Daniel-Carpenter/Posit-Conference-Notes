@@ -1,164 +1,255 @@
-# Posit Conference Notes
+# R in Production
 
 2024-08-12
 
-- [<span class="toc-section-number">1</span> Session: R in
-  Production](#session-r-in-production)
-  - [<span class="toc-section-number">1.1</span> Key
-    Takeaways](#key-takeaways)
-  - [<span class="toc-section-number">1.2</span> Misc.
-    Facts](#misc-facts)
-- [<span class="toc-section-number">2</span> The Whole
-  Game](#the-whole-game)
-  - [<span class="toc-section-number">2.1</span> GitHub
-    Actions](#github-actions)
-  - [<span class="toc-section-number">2.2</span> Posit
-    Connect](#posit-connect)
-  - [<span class="toc-section-number">2.3</span> Logging](#logging)
-  - [<span class="toc-section-number">2.4</span>
-    Authentication](#authentication)
-  - [<span class="toc-section-number">2.5</span> Running Code
-    Repeatedly](#running-code-repeatedly)
+### Key Takeaways
 
-# Session: R in Production
+#### 1. **Production Code**
 
-## Key Takeaways
+- **Automation with GitHub Actions:**
+  - Automate batch jobs using GitHub Actions for repetitive tasks.
 
-- GitHub Actions to automate batch jobs (only for )
+  - Ensure the setup includes dependency management, correct timing with
+    cron jobs, and periodic maintenance (every 60 days).
 
-- [`pointblank`](https://rstudio.github.io/pointblank/) package for data
-  validation
+  - **Example:**
 
-  - (validation report, column types, missingess, values in range)
+    ``` yaml
+    jobs:
+      scrape:
+        runs-on: ubuntu-latest
+        permissions:
+          contents: write
+        steps:
+          - uses: actions/checkout@v4
+          - uses: r-lib/actions/setup-r@v2
+            with:
+              use-public-rspm: true
+          - uses: r-lib/actions/setup-r-dependencies@v2
+          - name: Fetch latest data
+            run: Rscript scrape.R
+          - name: Collapse into yearly parquet files
+            run: Rscript collapse.R
+          - uses: stefanzweifel/git-auto-commit-action@v5
+    ```
 
-## Misc. Facts
+  - **Resource:** [GitHub Actions
+    Examples](https://github.com/r-lib/actions/tree/v2-branch/examples)
+- **Data Validation with `pointblank`:**
+  - Validate data types, handle missing values, and ensure data
+    integrity.
 
-- bacth: anything that is going to run at an interval, such as a
-  database update.
+  - Integrate with RMarkdown for detailed validation reports and
+    automated checks.
 
-- Deploy code, vs. render
+  - **Example:**
 
-  - `pak::pak`: faster than `install.packages()` since runs in parallel,
-    does dependancies, generally easy and fast.
+    ``` r
+    library(pointblank)
+    data |> 
+      col_is_date(date) |>
+      col_is_numeric(temperature) |>
+      col_vals_not_null(date) |>
+      col_vals_between(temperature, 30, 120)
+    ```
 
-    - Use `rig` to install R
+  - **Resource:** [`pointblank`
+    Package](https://rstudio.github.io/pointblank/)
+- **Logging:**
+  - Use logging (`logger` package) to track and diagnose issues in
+    production code.
 
-    - Use `PPPM` for sourcing public binaries.
+  - Log key events, warnings, and errors to streamline debugging.
 
-- In a project, use the `R/` folder for the reused code
+  - **Example:**
 
-- Remember that the server runs on UTC
+    ``` r
+    library(logger)
+    log_info("🛫 Script starting up.....")
+    log_info("Processing {nrow(df)} rows")
+    log_warn("❌ Missing data for {length(problems}) variables")
+    log_info("🛬 Completed; wrote {length(files)} files")
+    ```
 
-- Use the `ragg` package on linux to produce the same level of graphics.
+  - **Resource:** [Logger Package
+    Example](https://github.com/hadley/houston-pollen/actions/runs/10101725281/job/27935890005)
 
-# The Whole Game
+#### 2. **Code Management and Collaboration**
 
-- “You cannot do data science if you do not understand Git”
+- **Shared Coding Practices:**
+  - Establish a team coding style guide (e.g., Tidyverse style guide).
+  - Promote shared code ownership through GitHub, with regular pull
+    requests and code reviews.
+  - **Examples:**
+    - [Tidyverse Style Guide](https://style.tidyverse.org/)
+    - [R Packages by J. Leek](https://github.com/jtleek/rpackages)
+- **Package and Dependency Management:**
+  - Utilize `pak` for efficient package management and `renv` for
+    project-specific libraries.
 
-## GitHub Actions
+  - Monitor and eliminate unnecessary dependencies to reduce code
+    fragility.
 
-- Description: Able to run jobs, like R, python scripts, shiny apps,
-  integrates well with cron (cron generated with LLM, verified with cron
-  guru, add comment)
+  - **Example:**
 
-### Benefits
+    ``` r
+    renv::snapshot()
+    ```
 
-- Auto-Commits back to GitHub after running the code
+  - **Resource:** [Dependency Management
+    Insights](https://www.tidyverse.org/blog/2019/05/itdepends/)
 
-- Great for batch jobs
+#### 3. **Running Code on Servers**
 
-### Cons
+- **Server-Specific Considerations:**
+  - Understand differences in environments (local vs. server) and manage
+    issues like timezone, locale, and system dependencies.
+  - Use containers to standardize environments and ensure consistency
+    across deployments.
+  - **Resource:** [Rocker Containers for
+    R](https://github.com/rocker-org/rocker)
+- **Authentication and Security:**
+  - Implement secure authentication methods, favoring federated
+    authentication where possible.
 
-- Must be run every 60 days or else it will stop running.
+  - Manage environment variables carefully to avoid exposing sensitive
+    information.
 
-### Tips:
+  - **Example:**
 
-- Find a template or create one on ChatGPT, no one really writes these
-  by hand.
+    ``` r
+    Sys.getenv("NEWS_API_KEY")
+    ```
 
-- Use the same naming before the file extension
+  - **Resource:** [How to Manage Secrets in
+    GitHub](https://newsapi.org/)
 
-- Pick a random minute in the hour to schedule the job because most do 0
-  or 5’s
+#### 4. **Continuous Improvement**
 
-- You will need to install every package that the code will run, within
-  the GitHub action
+- **Refactoring and Maintenance:**
+  - Regularly refactor code to improve readability and maintainability.
+  - Address warnings and errors early to maintain clean, error-free
+    logs.
+  - **Resource:** [Code Review
+    Principles](https://code-review.tidyverse.org/)
+- **Adaptation to Change:**
+  - Anticipate and adapt to changes in data, schema, or platform by
+    implementing robust validation and error-handling mechanisms.
+  - **Resource:** [Data Validation Advanced
+    Workflows](https://github.com/posit-conf-2023/ds-workflows-r/blob/main/materials/project/01_data_clean_validate/01_data_clean_validate.rmd#L192C3-L192C21)
 
-- Waiting a bit can help
+------------------------------------------------------------------------
 
-## Posit Connect
+### Actionable Steps
 
-- Key use case: shiny apps
+1.  **Set Up GitHub Actions for Automation:**
+    - Implement workflows to automate repetitive tasks, ensuring they
+      include necessary package installations and proper scheduling.
+    - **Resource:** [GitHub Actions
+      Setup](https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions)
+2.  **Enhance Data Integrity:**
+    - Integrate `pointblank` into your data pipelines for continuous
+      data validation and error reporting.
+    - **Example:** [pointblank RMD
+      Integration](https://github.com/posit-conf-2023/ds-workflows-r/blob/main/materials/project/01_data_clean_validate/01_data_clean_validate.rmd#L192C3-L192C21)
+3.  **Standardize and Share Code:**
+    - Create a team coding style guide and enforce it through regular
+      code reviews and shared GitHub repositories.
+    - **Resources:**
+      - [Tidyverse Style Guide](https://style.tidyverse.org/)
+      - [Code Review Guide](https://code-review.tidyverse.org/)
+4.  **Optimize Server Deployments:**
+    - Use containers to match development and production environments,
+      and manage system dependencies effectively.
+    - **Resource:** [Rocker
+      Containers](https://github.com/rocker-org/rocker)
+5.  **Improve Logging Practices:**
+    - Implement structured logging across all production code to aid in
+      troubleshooting and monitoring.
+    - **Example:** [Logger Package
+      Usage](https://github.com/hadley/houston-pollen/actions/runs/10101725281/job/27935890005)
+6.  **Refactor Regularly:**
+    - Schedule regular code reviews and refactoring sessions to ensure
+      your codebase remains clean and efficient.
+    - **Resource:** [Refactoring
+      Techniques](https://developer-success-lab.gitbook.io/code-review-anxiety-workbook-1)
 
-- better dependancy installation system
+------------------------------------------------------------------------
 
-## Logging
+This version incorporates your original code snippets and links,
+ensuring the content is both actionable and detailed for future
+reference.
 
-- In production code, a good idea would be to add log messages
-  throughout the code, such as using `cat('Message', file = sterr())`.
-  Also, could do informative chunk naming.
+<br>
 
-- The `logger` package enhaces this by adding warnings, errors, etc,
-  while integrating variables through `glue`
+------------------------------------------------------------------------
 
-## Authentication
+Here is a concise summary of the key points from the slides:
 
-- Federated authetication trumps enctryted authentication. However, your
-  IT team sets up federated. Posit Connect allows for this.
+### **1. Whole Game Overview**【10†source】:
 
-### Secrets
+- **Definition of “In Production”**:
+  - Code runs on another machine (typically a Linux server).
+  - Code runs repeatedly (scheduled or on-demand).
+  - Code and data are shared responsibilities.
+- **Categories of Production Jobs**:
+  - **Batch**: R scripts, reports, models (scheduled, computationally
+    intensive).
+  - **Interactive**: Shiny apps, APIs (on-demand, lighter computation).
+- **Deployment Tools**:
+  - **GitHub Actions**: Suitable for batch jobs, integrates with Git.
+  - **Posit Connect Cloud**: Best for interactive jobs, handles
+    deployment details.
+  - **DIY**: Use Docker, rig, pak for custom setups.
 
-- GitHub, can add secrets per repo
-- Can add secrets on Posit Connect
-- Note, do not commit .Rhistory files because that is a log of the
-  console, which could send secret info.
+### **2. Running Code on Another Server**【9†source】:
 
-## Running Code Repeatedly
+- **Challenges**:
+  - **Minor Frustrations**: Differences between local (Windows/Mac) and
+    server (Linux) environments (e.g., time zones, fonts).
+  - **Package Management**: Ensuring consistent package versions across
+    environments.
+  - **Debugging & Logging**: Using tools like `rlang::back_trace()` for
+    effective error handling.
+  - **Authentication**: Managing environment variables securely across
+    platforms.
+- **Tools and Tips**:
+  - **Containers**: Insulate platform changes using Docker.
+  - **Logging**: Include detailed logs to simplify debugging.
+  - **System Dependencies**: Use `pak::pkg_sysreqs()` to identify
+    missing libraries.
 
-- Eliminate all warnings and messages
+### **3. Running Code Repeatedly**【8†source】:
 
-  - Warnings remove. could use `options(warn = 2)` to change all
-    warnings for errors.
+- **Change Management**:
+  - **Data and Schema Changes**: Regular updates can break code;
+    establish robust checks.
+  - **Package and Platform Updates**: Capture versions at deployment to
+    maintain stability.
+  - **Validation**: Use tools like `pointblank` to validate data
+    integrity.
+- **Mitigation Strategies**:
+  - **Containers**: Isolate dependencies to prevent issues.
+  - **Renv**: Create project-specific libraries to ensure
+    reproducibility.
+  - **Refactoring**: Regularly update and clean up code to handle
+    evolving requirements.
 
-  - Deprication could change this to an error with
-    `options(lifecycle_verbosity = "error")`
+### **4. Shared Responsibility**【7†source】:
 
-  - Messages help clean up the logs for error isolation
+- **Sharing Code and Data**:
+  - **Data Formats**: Use efficient formats like Parquet for sharing.
+  - **Git Repositories**: Establish naming conventions and version
+    control practices.
+  - **Code Reviews**: Implement regular code reviews for quality
+    control.
+  - **Team Packages**: Develop shared libraries for common tasks.
+- **Tools and Best Practices**:
+  - **GitHub**: Centralize code and documentation for collaboration.
+  - **Documentation**: Build and maintain a team style guide.
+  - **Automated Workflows**: Use tools like `targets` and `pins` to
+    automate tasks.
 
-- Check and reduce the number of dependencies, causing potential for
-  errors in the future
-
-  - `pak` packages has a packages needed that we can evakuate
-
-### Dealing with Package Conflicts:
-
-Use the `library(conflicts)` function, and it will throw and error and
-force you to deal with the conflicts
-
-### `renv`: Install a package per project
-
-> Only use this unless you have to, keeps the code in the original
-> state.
-
-> Problem: This could cause stale packages
-
-### Data Changes
-
-Social: make friends and contracts with your data.
-
-Technical: make error checks
-
-#### `pointblank`:
-
-check’s column types, missingness, matching variables, values are in
-range
-
-RMD data validation report - Data quality reporting  
-- Pipeline data validation  
-- Expectations in unit tests  
-- Custom control flow  
-- Rmd integration
-
-Can send emails on fail using connect
-
-<https://github.com/posit-conf-2023/ds-workflows-r/blob/main/materials/project/01_data_clean_validate/01_data_clean_validate.rmd#L192C3-L192C21>
+Each section focuses on essential concepts and best practices for
+managing R code in production environments, emphasizing consistency,
+automation, and collaboration across teams.

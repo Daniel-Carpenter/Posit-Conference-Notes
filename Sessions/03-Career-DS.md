@@ -1,0 +1,78 @@
+# Navigating Career in DS
+
+2024-08-13
+
+### Key Takeaways
+
+- **GitHub Portfolio:** Showcase a scoped resume on a personal website
+  that highlights coding skills, problem-solving approach, and
+  communication abilities.
+- **Growth Mindset:** Cultivate a growth mindset and advocate for
+  yourself—guide your team, but allow them ownership over the details.
+- **Team Management:** Set clear, honest expectations; facilitate team
+  goals; and maintain a minimal, sustainable process for getting work
+  done.
+
+------------------------------------------------------------------------
+
+### Navigating Career in Data Science
+
+#### **Talk 1: Career Growth**
+
+- **Growth Mindset:**
+  - Don’t hesitate to ask for help; continual learning and networking
+    will ease career progression.
+  - **Find Your Niche:** Identify what sets you apart—be it subject
+    matter expertise, workflow mastery, or management skills.
+  - **Self-Advocacy:** Know your worth and express it, especially when
+    pursuing new projects that enhance your skills.
+  - **Long-Term Impact:** Be aware that today’s expertise might position
+    you as a future advisor.
+
+#### **Talk 2: GitHub Portfolio**
+
+- **Building a Portfolio:**
+  - Show coding skills, problem-solving, and communication in your
+    repositories.
+  - Start projects that reflect your skills and interests but are small
+    enough to manage effectively.
+  - **Key Features of Repos:**
+    - Modular, well-organized, and fully documented.
+    - Easy to run and build upon.
+  - **Repo Management:**
+    - Pin repos that communicate your strengths and hide those you
+      prefer not to showcase.
+
+#### **Talk 3: Team Dynamics**
+
+- **Data Science Identity:**
+  - You are a data scientist, even if your work isn’t cutting-edge—data
+    science covers a broad spectrum.
+- **Healthy Work Environment:**
+  - Set and revisit expectations to prevent resentment and burnout.
+  - **Goal Setting:** Define team goals and facilitate how to achieve
+    them. Support employee growth along the way.
+  - **Healthy Boundaries:** It’s okay to say no to stakeholders and
+    manage temporary responsibilities without feeling trapped.
+- **Q&A:**
+  - Distribute the responsibility of handling urgent issues to prevent
+    burnout.
+
+#### **Talk 4: Managing Teams**
+
+- **Minimal Viable Process:**
+  - Develop processes that are sustainable, focusing only on what’s
+    necessary to get things done efficiently.
+  - **Distilling the Process:**
+    - **Gather:** Include all relevant stakeholders and provide just
+      enough detail for the team to succeed.
+    - **Do:** Allow the team space to figure out the “who,” “what,” and
+      “how.” Ensure meetings have clear goals and the right
+      participants.
+    - **Deliver:** Credit the team for successes; take ownership of
+      mistakes.
+  - **Process Experimentation:**
+    - Continuously refine processes by identifying pain points and
+      experimenting with improvements.
+  - **Problem-Solving:** Use the POP method (Purpose, Outcome, Process)
+    to address and resolve issues effectively.
